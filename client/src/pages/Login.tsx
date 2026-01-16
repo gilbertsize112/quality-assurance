@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldAlert, Eye, EyeOff, Globe, Settings } from 'lucide-react';
+import { ShieldAlert, Eye, EyeOff, Globe, Settings, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
 const Login = () => {
@@ -38,17 +38,19 @@ const Login = () => {
         localStorage.setItem('userRole', user.role);
         localStorage.setItem('userState', user.state);
 
-        if (user.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/officer-form');
-        }
+        // Small delay so the user can see the "Authentication Successful" state
+        setTimeout(() => {
+          if (user.role === 'admin') {
+            navigate('/admin');
+          } else {
+            navigate('/officer-form');
+          }
+        }, 1500);
       }
     } catch (err: any) {
       console.error("Login Error:", err);
+      setLoading(false); // Stop loading to show the error
       alert(err.response?.data?.message || "NDDC Security: Invalid Credentials");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -86,9 +88,16 @@ const Login = () => {
           100% { opacity: 0; transform: scale(1.1); }
         }
 
+        @keyframes pulseCustom {
+          0% { opacity: 0.6; }
+          50% { opacity: 1; }
+          100% { opacity: 0.6; }
+        }
+
         .animate-slide { animation: slideUp 0.6s ease-out; }
         .animate-spin-slow { animation: spinSlow 4s linear infinite; }
         .animate-splash { animation: fadeInOut 5s forwards; }
+        .animate-pulse-slow { animation: pulseCustom 2s infinite; }
         
         @media (max-width: 480px) {
           .login-card { 
@@ -116,6 +125,17 @@ const Login = () => {
           }
         }
       `}</style>
+
+      {/* --- AUTHENTICATION LOADING OVERLAY (Shows when logging in) --- */}
+      {loading && (
+        <div style={styles.authLoadingOverlay}>
+          <div style={{ textAlign: 'center' }}>
+            <Loader2 className="animate-spin-slow" color="#00aaff" size={60} style={{ marginBottom: '20px' }} />
+            <h2 className="animate-pulse-slow" style={styles.loadingText}>AUTHENTICATING SECURE ACCESS...</h2>
+            <p style={{ color: '#aaa', fontSize: '10px', letterSpacing: '2px' }}>NDDC QUALITY ASSURANCE GATEWAY</p>
+          </div>
+        </div>
+      )}
 
       {/* --- WELCOME SPLASH SCREEN (Shows for 5 Seconds) --- */}
       {showSplash ? (
@@ -244,6 +264,25 @@ const styles: any = {
     letterSpacing: '4px',
     marginTop: '20px',
     opacity: 0.8
+  },
+  authLoadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 15, 30, 0.9)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2000,
+  },
+  loadingText: {
+    color: '#ffffff',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    letterSpacing: '3px',
+    margin: '10px 0'
   },
   darkenLayer: {
     backgroundColor: 'rgba(0, 30, 60, 0.6)', 
