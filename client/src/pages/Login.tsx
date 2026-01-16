@@ -8,10 +8,10 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showSplash, setShowSplash] = useState(true); // State for the 5s welcome screen
+  const [showSplash, setShowSplash] = useState(true); 
   const navigate = useNavigate();
 
-  // Handle the 5-second Splash Screen timer
+ 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false);
@@ -38,7 +38,6 @@ const Login = () => {
         localStorage.setItem('userRole', user.role);
         localStorage.setItem('userState', user.state);
 
-        // Small delay so the user can see the "Authentication Successful" state
         setTimeout(() => {
           if (user.role === 'admin') {
             navigate('/admin');
@@ -49,7 +48,7 @@ const Login = () => {
       }
     } catch (err: any) {
       console.error("Login Error:", err);
-      setLoading(false); // Stop loading to show the error
+      setLoading(false); 
       alert(err.response?.data?.message || "NDDC Security: Invalid Credentials");
     }
   };
@@ -126,7 +125,7 @@ const Login = () => {
         }
       `}</style>
 
-      {/* --- AUTHENTICATION LOADING OVERLAY (Shows when logging in) --- */}
+     
       {loading && (
         <div style={styles.authLoadingOverlay}>
           <div style={{ textAlign: 'center' }}>
@@ -137,7 +136,6 @@ const Login = () => {
         </div>
       )}
 
-      {/* --- WELCOME SPLASH SCREEN (Shows for 5 Seconds) --- */}
       {showSplash ? (
         <div style={styles.splashContainer} className="animate-splash">
           <div style={{ textAlign: 'center' }}>
