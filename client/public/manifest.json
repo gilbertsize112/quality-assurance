@@ -4,22 +4,22 @@
   "description": "Everlink Audit Archive & Quality Assurance Portal",
   "icons": [
     {
-      "src": "vite.svg",
+      "src": "logo.png",
       "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "vite.svg",
+      "src": "logo.png",
       "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#006699",
-  "background_color": "#001e3c",
+  "theme_color": "#006837",
+  "background_color": "#ffffff",
   "orientation": "portrait",
   "scope": "/"
 }
