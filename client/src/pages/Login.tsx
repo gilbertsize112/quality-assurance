@@ -16,11 +16,11 @@ const Login = () => {
 
     try {
       // LINKING TO BACKEND: Updated to Network IP for Mobile Access
-      const response = await axios.post('http://10.53.75.193:5000/api/auth/login', {
-        username,
-        password
-      });
-
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const response = await axios.post(`${apiUrl}/api/auth/login`, {
+  username,
+  password
+});
       if (response.data.success) {
         const { token, user } = response.data;
 
