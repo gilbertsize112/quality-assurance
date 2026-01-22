@@ -31,7 +31,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: ()
 
   return (
     <div style={styles.modalOverlay}>
-      <div style={styles.registerCard} className="animate-slide">
+      <div style={styles.registerCard} className="animate-slide modal-card-mobile">
         <button onClick={onClose} style={styles.closeBtn}><X size={20} /></button>
         {!isSent ? (
           <>
@@ -116,7 +116,7 @@ const CreateModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
 
   return (
     <div style={styles.modalOverlay}>
-      <div style={styles.registerCard} className="animate-slide">
+      <div style={styles.registerCard} className="animate-slide modal-card-mobile">
         {!isSuccess ? (
           <>
             <button onClick={onClose} style={styles.closeBtn}><X size={20} /></button>
@@ -126,7 +126,7 @@ const CreateModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
                <p style={{fontSize: '9px', color: '#006837', fontWeight: 'bold', letterSpacing: '1px'}}>NDDC QUALITY ASSURANCE SYSTEM</p>
             </div>
             <form onSubmit={handleRegister}>
-              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px'}}>
+              <div className="enrollment-grid" style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px'}}>
                 <div>
                   <label style={styles.label}>STAFF USERNAME</label>
                   <input style={styles.input} placeholder="J.Doe" value={username} onChange={e => setUsername(e.target.value)} required />
@@ -243,6 +243,18 @@ const Login = () => {
           .ever-img { width: 85px; }
           .nddc-img { width: 50px; height: 50px; }
           h1 { font-size: 22px !important; }
+          
+          /* Modal Specific Mobile Fixes */
+          .modal-card-mobile {
+            padding: 20px 15px !important;
+            width: 92% !important;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+          .enrollment-grid {
+            grid-template-columns: 1fr !important;
+            gap: 5px !important;
+          }
         }
       `}</style>
 
