@@ -206,9 +206,15 @@ const Login = () => {
         localStorage.setItem('username', user.username);
         localStorage.setItem('userRole', user.role);
         localStorage.setItem('userState', user.state);
+        
         setTimeout(() => {
-          if (user.role === 'admin') navigate('/admin');
-          else navigate('/staff-page');
+          // REDIRECTION LOGIC
+          if (user.role === 'admin') {
+            navigate('/admin');
+          } else {
+            // UPDATED: This now matches the path in your App.tsx
+            navigate('/officer-form');
+          }
         }, 1500);
       }
     } catch (err: any) {
@@ -221,19 +227,26 @@ const Login = () => {
     <div style={styles.loginOverlay}>
       <style>{`
         body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: 'Inter', sans-serif; }
-        input, select { font-size: 16px !important; color: #000000 !important; } /* Force Black Text & No Zoom */
+        input, select { font-size: 16px !important; color: #000000 !important; } 
         
-        /* Specific Fix for Mobile Select Background */
         select { background-color: #f8fbff !important; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fadeInOut { 0% { opacity: 0; transform: scale(0.9); } 20% { opacity: 1; transform: scale(1); } 80% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); } }
         @keyframes pulseCustom { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        
+        @keyframes floatSplash {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+          100% { transform: translateY(0px); }
+        }
+
         .animate-slide { animation: slideUp 0.6s ease-out; }
         .animate-spin-slow { animation: spinSlow 4s linear infinite; }
         .animate-splash { animation: fadeInOut 5s forwards; }
         .animate-pulse-slow { animation: pulseCustom 2s infinite; }
+        .animate-float-splash { animation: floatSplash 3s ease-in-out infinite; }
         
         .logo-row {
           display: flex;
@@ -246,6 +259,13 @@ const Login = () => {
 
         .ever-img { width: 110px; height: auto; object-fit: contain; }
         .nddc-img { width: 65px; height: 65px; object-fit: contain; }
+        
+        .nddc-splash-logo { 
+           width: 150px; 
+           height: 150px; 
+           object-fit: contain; 
+           margin-bottom: 20px;
+        }
 
         @media (max-width: 450px) {
           .animate-slide { width: 95% !important; padding: 20px 15px !important; }
@@ -253,6 +273,7 @@ const Login = () => {
           .ever-img { width: 85px; }
           .nddc-img { width: 50px; height: 50px; }
           h1 { font-size: 22px !important; }
+          .nddc-splash-logo { width: 100px; height: 100px; }
           
           .modal-card-mobile {
             padding: 20px 15px !important;
@@ -282,8 +303,9 @@ const Login = () => {
 
       {showSplash ? (
         <div style={styles.splashContainer} className="animate-splash">
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            <Settings className="animate-spin-slow" color="#ffffff" size={80} style={{ marginBottom: '30px' }} />
+          <div style={{ textAlign: 'center', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <img src="/nddclogo.png" alt="NDDC" className="nddc-splash-logo animate-float-splash" />
+            <Settings className="animate-spin-slow" color="#ffffff" size={40} style={{ marginBottom: '20px', opacity: 0.8 }} />
             <h1 style={styles.splashTitle}>QUALITY ASSURANCE <br/> MANAGEMENT SYSTEM</h1>
             <p style={styles.splashSubtitle}>NDDC x EVERLINK TELESAT</p>
           </div>
@@ -293,11 +315,11 @@ const Login = () => {
           <div style={{...styles.loginCard, margin: 'auto'}} className="animate-slide">
             
             <div className="logo-row">
-               <img src="/nddclogo.png" alt="NDDC" className="nddc-img" />
-               <div style={{ flex: 1, textAlign: 'center' }}>
-                  <span style={styles.facilitatorTag}>OFFICIAL PORTAL</span>
-               </div>
-               <img src="/everlogo.png" alt="Everlink" className="ever-img" />
+                <img src="/nddclogo.png" alt="NDDC" className="nddc-img" />
+                <div style={{ flex: 1, textAlign: 'center' }}>
+                   <span style={styles.facilitatorTag}>OFFICIAL PORTAL</span>
+                </div>
+                <img src="/everlogo.png" alt="Everlink" className="ever-img" />
             </div>
 
             <div style={{textAlign: 'center', marginBottom: '15px'}}>
