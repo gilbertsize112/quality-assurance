@@ -31,7 +31,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: ()
 
   return (
     <div style={styles.modalOverlay}>
-      <div style={styles.registerCard} className="animate-slide modal-card-mobile">
+      <div style={{...styles.registerCard, margin: 'auto'}} className="animate-slide modal-card-mobile">
         <button onClick={onClose} style={styles.closeBtn}><X size={20} /></button>
         {!isSent ? (
           <>
@@ -116,7 +116,7 @@ const CreateModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
 
   return (
     <div style={styles.modalOverlay}>
-      <div style={styles.registerCard} className="animate-slide modal-card-mobile">
+      <div style={{...styles.registerCard, margin: 'auto'}} className="animate-slide modal-card-mobile">
         {!isSuccess ? (
           <>
             <button onClick={onClose} style={styles.closeBtn}><X size={20} /></button>
@@ -247,9 +247,10 @@ const Login = () => {
           /* Modal Specific Mobile Fixes */
           .modal-card-mobile {
             padding: 20px 15px !important;
-            width: 92% !important;
-            max-height: 90vh;
+            width: 90% !important;
+            max-height: 85vh;
             overflow-y: auto;
+            margin: auto !important; /* Forces centering on mobile */
           }
           .enrollment-grid {
             grid-template-columns: 1fr !important;
@@ -280,7 +281,7 @@ const Login = () => {
         </div>
       ) : (
         <div style={styles.darkenLayer}>
-          <div style={styles.loginCard} className="animate-slide">
+          <div style={{...styles.loginCard, margin: 'auto'}} className="animate-slide">
             
             <div className="logo-row">
                <img src="/nddclogo.png" alt="NDDC" className="nddc-img" />
@@ -346,9 +347,9 @@ const styles: any = {
   splashSubtitle: { color: '#ffffff', fontSize: '10px', fontWeight: 'bold', letterSpacing: '3px', marginTop: '15px', opacity: 0.9 },
   authLoadingOverlay: { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(255, 255, 255, 0.95)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000 },
   loadingText: { color: '#003366', fontSize: '12px', fontWeight: 'bold', letterSpacing: '2px', marginTop: '15px' },
-  darkenLayer: { height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '15px' },
+  darkenLayer: { height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '15px', boxSizing: 'border-box' },
   loginCard: { backgroundColor: 'rgba(255, 255, 255, 0.98)', padding: '25px 40px', borderRadius: '20px', width: '100%', maxWidth: '500px', boxShadow: '0 30px 60px -12px rgba(0,0,0,0.6)', borderBottom: '6px solid #006837', position: 'relative' },
-  modalOverlay: { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 3000, padding: '20px' },
+  modalOverlay: { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 3000, padding: '20px', boxSizing: 'border-box' },
   registerCard: { backgroundColor: 'white', padding: '25px 30px', borderRadius: '20px', width: '100%', maxWidth: '450px', position: 'relative', borderTop: '8px solid #006837' },
   closeBtn: { position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#888' },
   facilitatorTag: { fontSize: '7px', backgroundColor: '#003366', color: 'white', padding: '3px 10px', borderRadius: '50px', fontWeight: '900', letterSpacing: '1px' },
