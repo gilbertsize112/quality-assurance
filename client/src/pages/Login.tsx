@@ -86,6 +86,7 @@ const CreateModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if(!state) { alert("Please select an Assigned State"); return; }
     setLoading(true);
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     try {
@@ -133,12 +134,17 @@ const CreateModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
                 </div>
                 <div>
                   <label style={styles.label}>ASSIGNED STATE</label>
-                  <input style={styles.input} list="states" placeholder="Select" value={state} onChange={e => setState(e.target.value)} required />
-                  <datalist id="states">
-                     {["Abia", "Akwa Ibom", "Bayelsa", "Cross River", "Delta", "Edo", "Imo", "Rivers", "Ondo", "Head Quaters"].map(s => (
+                  <select 
+                    style={styles.input} 
+                    value={state} 
+                    onChange={e => setState(e.target.value)} 
+                    required
+                  >
+                    <option value="" disabled>Select</option>
+                    {["Abia", "Akwa Ibom", "Bayelsa", "Cross River", "Delta", "Edo", "Imo", "Rivers", "Ondo", "Head Quaters"].map(s => (
                       <option key={s} value={s}>{s}</option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
               </div>
               <div style={{marginBottom: '10px'}}>
@@ -215,7 +221,11 @@ const Login = () => {
     <div style={styles.loginOverlay}>
       <style>{`
         body, html { margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%; font-family: 'Inter', sans-serif; }
-        input, select { font-size: 15px !important; }
+        input, select { font-size: 16px !important; color: #000000 !important; } /* Force Black Text & No Zoom */
+        
+        /* Specific Fix for Mobile Select Background */
+        select { background-color: #f8fbff !important; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fadeInOut { 0% { opacity: 0; transform: scale(0.9); } 20% { opacity: 1; transform: scale(1); } 80% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); } }
@@ -244,13 +254,12 @@ const Login = () => {
           .nddc-img { width: 50px; height: 50px; }
           h1 { font-size: 22px !important; }
           
-          /* Modal Specific Mobile Fixes */
           .modal-card-mobile {
             padding: 20px 15px !important;
             width: 90% !important;
             max-height: 85vh;
             overflow-y: auto;
-            margin: auto !important; /* Forces centering on mobile */
+            margin: auto !important;
           }
           .enrollment-grid {
             grid-template-columns: 1fr !important;
@@ -354,7 +363,7 @@ const styles: any = {
   closeBtn: { position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', cursor: 'pointer', color: '#888' },
   facilitatorTag: { fontSize: '7px', backgroundColor: '#003366', color: 'white', padding: '3px 10px', borderRadius: '50px', fontWeight: '900', letterSpacing: '1px' },
   label: { display: 'block', fontSize: '9px', fontWeight: '900', color: '#003366', marginBottom: '5px', letterSpacing: '0.5px' },
-  input: { width: '100%', padding: '12px', border: '2px solid #eef6f9', borderRadius: '10px', fontSize: '15px', outline: 'none', boxSizing: 'border-box', backgroundColor: '#f8fbff' },
+  input: { width: '100%', padding: '12px', border: '2px solid #eef6f9', borderRadius: '10px', fontSize: '16px', outline: 'none', boxSizing: 'border-box', backgroundColor: '#f8fbff', color: '#000000' },
   eyeBtn: { position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer' },
   forgotBtn: { background: 'none', border: 'none', color: '#006837', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' },
   submitBtn: { width: '100%', padding: '14px', backgroundColor: '#006837', color: 'white', border: 'none', borderRadius: '10px', fontWeight: '900', fontSize: '13px', cursor: 'pointer', letterSpacing: '1px' },
