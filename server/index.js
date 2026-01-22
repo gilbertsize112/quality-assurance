@@ -41,7 +41,6 @@ app.get('/', (req, res) => {
 });
 
 // --- DATABASE CONNECTION ---
-// When deploying to Render, ensure MONGO_URI is set in the Render Dashboard Environment Variables
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/nddc_qa';
 
 mongoose.set('strictQuery', false); 
@@ -66,7 +65,6 @@ app.use((err, req, res, next) => {
 // --- SERVER START ---
 const PORT = process.env.PORT || 5000;
 
-// listening on '0.0.0.0' is essential for Render to detect the port correctly
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server active on port ${PORT}`);
     console.log(`📡 Everlink Telesat Monitoring Live: Abia, Cross Rivers, Akwa Ibom, Imo`);

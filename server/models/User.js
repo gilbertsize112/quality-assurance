@@ -5,11 +5,19 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true }, 
     role: { type: String, enum: ['officer', 'admin'], default: 'officer' },
-    state: { type: String, enum: ['ABIA', 'CROSS RIVERS', 'AKWA IBOM', 'IMO STATE', 'HQ'], required: true }
+    // I updated the enum to match all NDDC states and the names used in your frontend
+    state: { 
+        type: String, 
+        required: true,
+        uppercase: true, // This automatically converts 'Abia' to 'ABIA' before saving
+        enum: [
+            'ABIA', 'AKWA IBOM', 'BAYELSA', 'CROSS RIVER', 
+            'DELTA', 'EDO', 'IMO', 'RIVERS', 'ONDO', 'HQ'
+        ] 
+    }
 }, { timestamps: true });
 
 // PASSWORD HASHING: Modern Async Syntax
-// We remove 'next' to prevent the TypeError in modern Mongoose
 UserSchema.pre('save', async function () {
     if (!this.isModified('password')) return;
 
@@ -21,7 +29,7 @@ UserSchema.pre('save', async function () {
     }
 });
 
-// HELPER METHOD: To check if the password entered matches the scrambled one in the DB
+// HELPER METHOD: To check if password matches
 UserSchema.methods.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
