@@ -95,7 +95,7 @@ const CreateModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void
         email,
         password,
         state,
-        role: 'officer'
+        role: 'staff' // CRITICAL FIX: Ensure 'staff' role is sent for NDDC Utility Reporting
       });
       if (response.data.success) {
         setIsSuccess(true);
@@ -208,11 +208,16 @@ const Login = () => {
         localStorage.setItem('userState', user.state);
         
         setTimeout(() => {
-          // REDIRECTION LOGIC
-          if (user.role === 'admin') {
-            navigate('/admin');
+          // --- UPDATED ROLE-BASED REDIRECTION LOGIC ---
+          const role = user.role.toLowerCase();
+          
+          if (role === 'supervisor' || role === 'admin') {
+            navigate('/AdminDashboard');
+          } else if (role === 'staff') {
+            navigate('/StaffPage');
+          } else if (role === 'officer') {
+            navigate('/officer-form');
           } else {
-            // UPDATED: This now matches the path in your App.tsx
             navigate('/officer-form');
           }
         }, 1500);

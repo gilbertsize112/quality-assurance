@@ -20,11 +20,15 @@ function App() {
         <Route path="/officer-reports" element={<OfficerReports />} /> 
         <Route path="/image" element={<ImageGallery />} /> 
 
-        {/* New Staff Utility Reporting Route */}
-        <Route path="/staff-page" element={<StaffPage />} /> 
+        {/* FIX 1: Matches Login.tsx navigate('/staffpage') 
+          Removed the dash to match your login redirection 
+        */}
+        <Route path="/staffpage" element={<StaffPage />} /> 
         
-        {/* Management/HQ Routes */}
-        <Route path="/admin" element={<AdminDashboard />} />
+        {/* FIX 2: Matches Login.tsx navigate('/AdminDashboard') 
+          Changed path from "/admin" to "/AdminDashboard" 
+        */}
+        <Route path="/AdminDashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );

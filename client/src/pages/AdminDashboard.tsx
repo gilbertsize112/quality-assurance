@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, LogOut, ShieldAlert, CheckCircle, MapPin, Search, FileDown, Globe, Moon, Sun, ArrowLeft, Database, X, User, Calendar, Clock, AlertCircle, Trash2, Send } from 'lucide-react';
+import { LayoutDashboard, LogOut, ShieldAlert, CheckCircle, MapPin, Search, FileDown, Globe, Moon, Sun, ArrowLeft, Database, X, User, Calendar, Clock, AlertCircle, Trash2, Send, Camera, Info, Hammer, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import jsPDF from 'jspdf';
@@ -41,14 +41,11 @@ const AdminDashboard = () => {
     }
   };
 
-  // Notification / Resolve Logic
   const handleNotifyAndFix = async (reportId: string) => {
     try {
-        // Optimistic update for UI feel
         const updated = allReports.map(r => r._id === reportId ? { ...r, conditionKey: 3, actionRequired: "RESOLVED/FIXED" } : r);
         setAllReports(updated);
         
-        // Backend update (Assuming your API supports PATCH)
         await axios.patch(`http://localhost:5000/api/utilities/${reportId}`, 
           { conditionKey: 3, actionRequired: "RESOLVED: Utility Officer Notified & Fixed" },
           { headers: { 'Authorization': `Bearer ${token}` }}
@@ -60,7 +57,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Delete Logic
   const handleDeleteReport = async (reportId: string) => {
     if (window.confirm("Are you sure you want to permanently delete this report from the database?")) {
         try {
@@ -78,19 +74,16 @@ const AdminDashboard = () => {
   useEffect(() => {
     let result = allReports;
 
-    // Filter by State
     if (activeFilter !== 'ALL' && activeFilter !== 'NONE') {
       result = result.filter((r: any) => 
         r.state === activeFilter || r.broadcastToAll === true
       );
     }
 
-    // Sub-Filter: Registered vs Faulty
     if (subFilter === 'FAULTY') {
         result = result.filter((r: any) => r.conditionKey === 1);
     }
 
-    // Search Bar
     if (searchTerm) {
       result = result.filter((r: any) => 
         r.utilityName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -120,8 +113,8 @@ const AdminDashboard = () => {
     card: darkMode ? 'rgba(25, 25, 25, 0.94)' : 'rgba(255, 255, 255, 0.92)',
     text: darkMode ? '#ffffff' : '#1a1a1a',
     border: darkMode ? '#333333' : '#e0e0e0',
-    primary: '#006699', // Blue
-    secondary: '#006837' // Green
+    primary: '#006699', 
+    secondary: '#006837' 
   };
 
   return (
@@ -154,7 +147,6 @@ const AdminDashboard = () => {
         }
         .moving-logo { animation: float-logo 3s ease-in-out infinite; }
         
-        /* RESTORED: Beautiful Hover Effect */
         .state-card:hover { 
           transform: translateY(-8px) scale(1.02) !important; 
           border: 2px solid ${theme.secondary} !important; 
@@ -309,36 +301,111 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* DETAILED MODAL */}
+      {/* DETAILED MODAL - UPDATED TO SHOW FULL UTILITY DETAILS */}
       {selectedReport && (
         <div style={styles.modalOverlay} className="animate-fade">
           <div style={{...styles.modalBox, backgroundColor: darkMode ? '#1e1e1e' : '#ffffff'}}>
             <div style={styles.modalHeader}>
-              <h3 style={{color: theme.primary, margin: 0, fontWeight: '800'}}>ASSET RECORD</h3>
+              <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                 <Database size={20} color={theme.primary} />
+                 <h3 style={{color: theme.primary, margin: 0, fontWeight: '800', fontSize: '16px'}}>FULL AUDIT REPORT</h3>
+              </div>
               <button onClick={() => setSelectedReport(null)} style={styles.closeBtn}><X size={24}/></button>
             </div>
 
-            <div style={styles.modalContent}>
+            <div style={{...styles.modalContent, maxHeight: '70vh', overflowY: 'auto', paddingRight: '5px'}}>
+               
+               {/* 1. PRIMARY ASSET HEADER */}
                <div style={{...styles.detailFocus, borderLeft: `4px solid ${selectedReport.conditionKey === 1 ? '#e63946' : theme.secondary}`, backgroundColor: darkMode ? '#2a2a2a' : '#f9f9f9'}}>
-                  <h1 style={{margin: '0', color: theme.text, fontSize: '20px'}}>{selectedReport.utilityName}</h1>
-                  <p style={{color: '#777', margin: '4px 0', fontSize: '12px'}}>Ref: {selectedReport._id.substring(0,8)} | {selectedReport.state}</p>
+                  <label style={{fontSize: '9px', fontWeight: '900', color: theme.secondary, letterSpacing: '1px'}}>UTILITY ASSET</label>
+                  <h1 style={{margin: '0', color: theme.text, fontSize: '22px', fontWeight: '800'}}>{selectedReport.utilityName}</h1>
+                  <p style={{color: '#777', margin: '4px 0', fontSize: '12px', fontWeight: '600'}}>ID: {selectedReport._id.substring(0,12).toUpperCase()} | {selectedReport.state}</p>
                </div>
 
-               <div style={{...styles.recommendationBox, backgroundColor: darkMode ? '#162b3d' : '#f0f7ff', borderColor: darkMode ? theme.primary : '#d0e4ff'}}>
-                  <AlertCircle size={20} color={theme.primary} />
-                  <div>
-                    <label style={{fontSize: '10px', fontWeight: '900', color: theme.primary, textTransform: 'uppercase'}}>Current Status</label>
-                    <p style={{margin: '3px 0 0 0', color: theme.text, fontSize: '13px', lineHeight: '1.5'}}>{selectedReport.actionRequired}</p>
+               {/* 2. IMAGE EVIDENCE PREVIEW */}
+               <div style={{marginBottom: '20px'}}>
+                  <label style={styles.sectionLabel}><Camera size={14}/> GEOTAGGED EVIDENCE</label>
+                  <div style={styles.imagePlaceholder}>
+                     {selectedReport.utilityImage ? (
+                        <img src={selectedReport.utilityImage} alt="Utility" style={{width: '100%', borderRadius: '12px'}} />
+                     ) : (
+                        <div style={{textAlign: 'center', color: '#888', padding: '20px'}}>
+                           <Activity size={30} style={{marginBottom: '10px', opacity: 0.5}}/>
+                           <p style={{fontSize: '11px'}}>Encoded GPS Image Secured</p>
+                        </div>
+                     )}
                   </div>
                </div>
 
-               <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+               {/* 3. LOCATION DATA GRID */}
+               <div style={styles.infoGrid}>
+                  <div style={styles.infoItem}>
+                     <label style={styles.infoLabel}><MapPin size={12}/> LOCATION/ZONE</label>
+                     <p style={{...styles.infoValue, color: theme.text}}>{selectedReport.buildingZone || 'Main Complex'}</p>
+                  </div>
+                  <div style={styles.infoItem}>
+                     <label style={styles.infoLabel}><Globe size={12}/> ENVIRONMENT</label>
+                     <p style={{...styles.infoValue, color: theme.text}}>{selectedReport.environment || 'Indoor'}</p>
+                  </div>
+                  <div style={styles.infoItem}>
+                     <label style={styles.infoLabel}><Calendar size={12}/> AUDIT DATE</label>
+                     <p style={{...styles.infoValue, color: theme.text}}>{selectedReport.reportDate}</p>
+                  </div>
+                  <div style={styles.infoItem}>
+                     <label style={styles.infoLabel}><Clock size={12}/> CAPTURE TIME</label>
+                     <p style={{...styles.infoValue, color: theme.text}}>{selectedReport.reportTime || '09:00 AM'}</p>
+                  </div>
+               </div>
+
+               {/* 4. TECHNICAL SPECS */}
+               <div style={{...styles.technicalBox, backgroundColor: darkMode ? '#111' : '#f4f4f4'}}>
+                  <div style={styles.techRow}>
+                     <span style={styles.techLabel}>Infrastructure Category:</span>
+                     <span style={{...styles.techVal, color: theme.primary}}>{selectedReport.category || 'General'}</span>
+                  </div>
+                  <div style={styles.techRow}>
+                     <span style={styles.techLabel}>Asset Serial Code:</span>
+                     <span style={styles.techVal}>{selectedReport.assetSerial || 'N/A'}</span>
+                  </div>
+                  <div style={styles.techRow}>
+                     <span style={styles.techLabel}>Last Inspection:</span>
+                     <span style={styles.techVal}>{selectedReport.lastInspection || 'None Recorded'}</span>
+                  </div>
+                  <div style={styles.techRow}>
+                     <span style={styles.techLabel}>Next Due Date:</span>
+                     <span style={{...styles.techVal, color: '#e63946'}}>{selectedReport.nextMaintenanceDate || 'URGENT'}</span>
+                  </div>
+               </div>
+
+               {/* 5. INSPECTOR DETAILS */}
+               <div style={{margin: '20px 0', padding: '15px', borderRadius: '12px', border: `1px dashed ${theme.border}`, display: 'flex', alignItems: 'center', gap: '15px'}}>
+                  <div style={{width: '40px', height: '40px', borderRadius: '50%', backgroundColor: theme.primary, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                     <User color="white" size={20}/>
+                  </div>
+                  <div>
+                     <label style={styles.infoLabel}>FIELD INSPECTOR</label>
+                     <p style={{margin: 0, fontWeight: '800', fontSize: '14px', color: theme.text}}>{selectedReport.inspectorName}</p>
+                     <p style={{margin: 0, fontSize: '10px', color: '#888'}}>ID: {selectedReport.inspectorId || 'OFFICER-77'}</p>
+                  </div>
+               </div>
+
+               {/* 6. IMPACT ASSESSMENT & ACTION */}
+               <div style={{...styles.recommendationBox, backgroundColor: darkMode ? '#162b3d' : '#f0f7ff', borderColor: darkMode ? theme.primary : '#d0e4ff'}}>
+                  <AlertCircle size={24} color={theme.primary} />
+                  <div>
+                    <label style={{fontSize: '10px', fontWeight: '900', color: theme.primary, textTransform: 'uppercase'}}>Management Action Required</label>
+                    <p style={{margin: '3px 0 0 0', color: theme.text, fontSize: '13px', lineHeight: '1.5', fontWeight: '600'}}>{selectedReport.actionRequired}</p>
+                  </div>
+               </div>
+
+               {/* BUTTONS */}
+               <div style={{display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px'}}>
                   {selectedReport.conditionKey === 1 && (
                     <button 
                         onClick={() => handleNotifyAndFix(selectedReport._id)}
                         style={{...styles.notifyBtn, backgroundColor: theme.secondary}}
                     >
-                        <Send size={16}/> NOTIFY & RESOLVE
+                        <Send size={16}/> BROADCAST REPAIR ORDER
                     </button>
                   )}
                   
@@ -346,7 +413,7 @@ const AdminDashboard = () => {
                     onClick={() => handleDeleteReport(selectedReport._id)}
                     style={styles.deleteBtn}
                   >
-                    <Trash2 size={16}/> PERMANENT DELETE
+                    <Trash2 size={16}/> PERMANENTLY WIPE RECORD
                   </button>
                </div>
             </div>
@@ -391,13 +458,25 @@ const styles: any = {
   iconBtn: { border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center' },
   
   modalOverlay: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,30,60,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 999, backdropFilter: 'blur(6px)', padding: '20px' },
-  modalBox: { width: '100%', maxWidth: '420px', padding: '25px', borderRadius: '24px', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' },
+  modalBox: { width: '100%', maxWidth: '480px', padding: '25px', borderRadius: '24px', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' },
   modalHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
   closeBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#aaa' },
   detailFocus: { padding: '15px', borderRadius: '12px', marginBottom: '15px' },
   recommendationBox: { padding: '15px', borderRadius: '15px', display: 'flex', gap: '12px', marginBottom: '20px', border: '1px solid' },
   notifyBtn: { color: 'white', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', justifyContent: 'center', gap: '10px', fontSize: '12px' },
-  deleteBtn: { backgroundColor: '#fff5f5', color: '#e63946', border: '1px solid #fed7d7', padding: '14px', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', justifyContent: 'center', gap: '10px', fontSize: '12px' }
+  deleteBtn: { backgroundColor: '#fff5f5', color: '#e63946', border: '1px solid #fed7d7', padding: '14px', borderRadius: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', justifyContent: 'center', gap: '10px', fontSize: '12px' },
+  
+  // NEW STYLES FOR FULL DETAILS
+  sectionLabel: { fontSize: '10px', fontWeight: '900', color: '#888', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '8px', textTransform: 'uppercase' },
+  imagePlaceholder: { width: '100%', borderRadius: '12px', backgroundColor: 'rgba(0,0,0,0.05)', minHeight: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' },
+  infoGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' },
+  infoItem: { display: 'flex', flexDirection: 'column' },
+  infoLabel: { fontSize: '9px', fontWeight: '800', color: '#999', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' },
+  infoValue: { fontSize: '13px', fontWeight: '700', margin: 0 },
+  technicalBox: { padding: '15px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' },
+  techRow: { display: 'flex', justifyContent: 'space-between', fontSize: '12px' },
+  techLabel: { color: '#888', fontWeight: '600' },
+  techVal: { fontWeight: '800' }
 };
 
 export default AdminDashboard;
